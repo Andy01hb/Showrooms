@@ -63,6 +63,7 @@ Archivos que se crean/modifican en esta fase, con su responsabilidad:
 ## Task 1: Scaffold Next.js + TypeScript e inicializar git
 
 **Files:**
+
 - Create: todo el scaffold de `create-next-app` en la raíz del proyecto.
 
 - [ ] **Step 1: Generar el proyecto Next.js en la carpeta actual**
@@ -72,6 +73,7 @@ Desde `C:\Users\valer\OneDrive\Escritorio\Showroom(Andy)`:
 ```bash
 npx create-next-app@latest . --typescript --eslint --app --src-dir --tailwind --import-alias "@/*" --no-turbopack
 ```
+
 Cuando pregunte por sobrescribir archivos existentes (ya hay `docs/`), elegir **No** para no borrar `docs/`. Si se queja por carpeta no vacía, mover temporalmente `docs/` fuera, scaffoldear, y devolver `docs/` adentro.
 
 - [ ] **Step 2: Inicializar git (si create-next-app no lo hizo)**
@@ -80,6 +82,7 @@ Cuando pregunte por sobrescribir archivos existentes (ya hay `docs/`), elegir **
 git init
 git branch -M main
 ```
+
 Expected: `.git/` existe; `git status` corre sin error.
 
 - [ ] **Step 3: Verificar que arranca**
@@ -87,6 +90,7 @@ Expected: `.git/` existe; `git status` corre sin error.
 ```bash
 npm run dev
 ```
+
 Expected: server en `http://localhost:3000`, página default de Next visible. Cortar con Ctrl+C.
 
 - [ ] **Step 4: Commit inicial**
@@ -101,6 +105,7 @@ git commit -m "chore: scaffold Next.js + TypeScript project"
 ## Task 2: TypeScript estricto + Prettier
 
 **Files:**
+
 - Modify: `tsconfig.json`
 - Create: `.prettierrc`
 - Modify: `package.json` (scripts)
@@ -136,6 +141,7 @@ Asegurar que `compilerOptions` incluya:
 ```bash
 npm i -D prettier
 ```
+
 Agregar en `"scripts"`:
 
 ```json
@@ -152,6 +158,7 @@ Agregar en `"scripts"`:
 npm run typecheck
 npm run format
 ```
+
 Expected: `typecheck` sin errores; `format` reescribe archivos sin fallar.
 
 - [ ] **Step 5: Commit**
@@ -168,6 +175,7 @@ git commit -m "chore: strict TypeScript + Prettier"
 Validamos la cadena de testing con una función real mínima: un helper de dominio que formatea precios en USD (lo vamos a necesitar igual).
 
 **Files:**
+
 - Create: `vitest.config.ts`
 - Create: `src/lib/format.ts`
 - Test: `tests/unit/format.test.ts`
@@ -178,6 +186,7 @@ Validamos la cadena de testing con una función real mínima: un helper de domin
 ```bash
 npm i -D vitest
 ```
+
 Crear `vitest.config.ts`:
 
 ```ts
@@ -194,6 +203,7 @@ export default defineConfig({
   },
 });
 ```
+
 Agregar en `package.json` scripts: `"test": "vitest run"`, `"test:watch": "vitest"`.
 
 - [ ] **Step 2: Escribir el test que falla**
@@ -220,6 +230,7 @@ describe('formatUsd', () => {
 ```bash
 npm test
 ```
+
 Expected: FAIL — `Cannot find module '@/lib/format'`.
 
 - [ ] **Step 4: Implementación mínima**
@@ -238,6 +249,7 @@ export function formatUsd(amount: number): string {
 ```bash
 npm test
 ```
+
 Expected: PASS (2 tests).
 
 - [ ] **Step 6: Commit**
@@ -252,6 +264,7 @@ git commit -m "test: add Vitest with formatUsd helper"
 ## Task 4: Playwright + primer E2E smoke (TDD)
 
 **Files:**
+
 - Create: `playwright.config.ts`
 - Test: `tests/e2e/home.spec.ts`
 - Modify: `package.json` (script `test:e2e`)
@@ -279,6 +292,7 @@ export default defineConfig({
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
 });
 ```
+
 Agregar script: `"test:e2e": "playwright test"`.
 
 - [ ] **Step 3: Escribir el E2E que falla**
@@ -299,6 +313,7 @@ test('home muestra el nombre del showroom', async ({ page }) => {
 ```bash
 npm run test:e2e
 ```
+
 Expected: FAIL — no existe un heading que matchee /showroom/.
 
 - [ ] **Step 5: Implementar la home mínima**
@@ -321,6 +336,7 @@ export default function Home() {
 ```bash
 npm run test:e2e
 ```
+
 Expected: PASS (1 test).
 
 - [ ] **Step 7: Commit**
@@ -341,6 +357,7 @@ git commit -m "test: add Playwright E2E + minimal home page"
 ```bash
 gh repo create showroom-inmobiliario --private --source=. --remote=origin --push
 ```
+
 Expected: repo creado en GitHub, `main` pusheado.
 
 - [ ] **Step 2: Verificar el remoto**
@@ -349,6 +366,7 @@ Expected: repo creado en GitHub, `main` pusheado.
 git remote -v
 git branch -r
 ```
+
 Expected: `origin` apunta al repo; existe `origin/main`.
 
 - [ ] **Step 3: Configurar branch protection en `main`** (se completa después de tener el CI, Task 6 — dejar el comando listo aquí)
@@ -364,6 +382,7 @@ gh api -X PUT repos/:owner/showroom-inmobiliario/branches/main/protection \
   -f "required_pull_request_reviews[required_approving_review_count]=0" \
   -f "restrictions=null"
 ```
+
 Expected: respuesta 200 con la config de protección. (Si el plan free no permite branch protection en repos privados, alternativa: mantener repo **público** o aplicar la disciplina manualmente. Documentarlo si pasa.)
 
 - [ ] **Step 4: Commit** (no hay cambios de archivos; saltar si nada cambió).
@@ -373,6 +392,7 @@ Expected: respuesta 200 con la config de protección. (Si el plan free no permit
 ## Task 6: Pipeline CI en GitHub Actions
 
 **Files:**
+
 - Create: `.github/workflows/ci.yml`
 
 - [ ] **Step 1: Crear el workflow**
@@ -417,6 +437,7 @@ git commit -m "ci: add GitHub Actions pipeline"
 git push -u origin chore/ci
 gh pr create --fill
 ```
+
 Expected: el PR dispara el workflow `CI`; el job `ci` corre y queda verde.
 
 - [ ] **Step 4: Aplicar branch protection** (ejecutar ahora el comando del Step 3 de la Task 5, que ya tiene el check `ci` disponible).
@@ -426,6 +447,7 @@ Expected: el PR dispara el workflow `CI`; el job `ci` corre y queda verde.
 ```bash
 gh pr merge --squash --delete-branch
 ```
+
 Expected: `main` actualizado, rama borrada.
 
 ---
@@ -433,6 +455,7 @@ Expected: `main` actualizado, rama borrada.
 ## Task 7: Lighthouse CI (presupuesto de performance)
 
 **Files:**
+
 - Create: `lighthouserc.json`
 - Modify: `.github/workflows/ci.yml` (job nuevo)
 
@@ -456,6 +479,7 @@ Expected: `main` actualizado, rama borrada.
   }
 }
 ```
+
 > Nota: empieza como `warn` para performance (la home es trivial; afinamos umbrales en fases con contenido real). Accessibility como `error` desde ya.
 
 - [ ] **Step 2: Agregar el job de Lighthouse al workflow**
@@ -463,18 +487,18 @@ Expected: `main` actualizado, rama borrada.
 Añadir a `.github/workflows/ci.yml`:
 
 ```yaml
-  lighthouse:
-    name: lighthouse
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-      - run: npm ci
-      - run: npm run build
-      - run: npx @lhci/cli autorun
+lighthouse:
+  name: lighthouse
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: npm
+    - run: npm ci
+    - run: npm run build
+    - run: npx @lhci/cli autorun
 ```
 
 - [ ] **Step 3: PR de verificación**
@@ -486,6 +510,7 @@ git commit -m "ci: add Lighthouse CI performance budget"
 git push -u origin chore/lighthouse
 gh pr create --fill
 ```
+
 Expected: el job `lighthouse` corre y reporta scores; el PR queda verde.
 
 - [ ] **Step 4: Mergear**
@@ -499,6 +524,7 @@ gh pr merge --squash --delete-branch
 ## Task 8: Supabase local (Docker)
 
 **Files:**
+
 - Create: `supabase/config.toml` (generado por `supabase init`)
 
 - [ ] **Step 1: Inicializar Supabase en el repo**
@@ -506,6 +532,7 @@ gh pr merge --squash --delete-branch
 ```bash
 supabase init
 ```
+
 Expected: crea carpeta `supabase/` con `config.toml`.
 
 - [ ] **Step 2: Levantar el stack local**
@@ -513,6 +540,7 @@ Expected: crea carpeta `supabase/` con `config.toml`.
 ```bash
 supabase start
 ```
+
 Expected: imprime `API URL` (`http://localhost:54321`), `anon key`, `service_role key`, `DB URL`. Anotar `API URL` y `anon key` (van a `.env.local` en Task 10).
 
 - [ ] **Step 3: Verificar Studio**
@@ -533,6 +561,7 @@ git commit -m "chore: init Supabase local stack"
 Identidad con tabla `profiles` (1:1 con `auth.users`), columna `role` (`admin/broker/cliente`, default `cliente`), trigger que crea el profile al registrarse, helper `current_user_role()` para usar en futuras políticas sin recursión, y RLS default-deny.
 
 **Files:**
+
 - Create: `supabase/migrations/<timestamp>_init_auth.sql`
 - Test: `tests/integration/profiles.rls.test.ts`
 - Create: `tests/helpers/supabase.ts`
@@ -542,6 +571,7 @@ Identidad con tabla `profiles` (1:1 con `auth.users`), columna `role` (`admin/br
 ```bash
 supabase migration new init_auth
 ```
+
 Editar el archivo `supabase/migrations/<timestamp>_init_auth.sql`:
 
 ```sql
@@ -611,6 +641,7 @@ create trigger on_auth_user_created
 ```bash
 supabase db reset
 ```
+
 Expected: recrea la DB local aplicando todas las migraciones, sin errores.
 
 - [ ] **Step 3: Crear helper de tests**
@@ -649,6 +680,7 @@ export async function signUpUser(email: string, password = 'test1234!') {
   return { client, userId: data.user.id, admin };
 }
 ```
+
 Instalar el SDK: `npm i @supabase/supabase-js`.
 
 - [ ] **Step 4: Escribir los tests de RLS que fallan**
@@ -680,14 +712,22 @@ describe('RLS de profiles', () => {
     const { client, userId } = await signUpUser(uniq());
     const { error } = await client.from('profiles').update({ role: 'admin' }).eq('id', userId);
     // la política with_check rechaza el cambio de rol
-    const { data } = await serviceClient().from('profiles').select('role').eq('id', userId).single();
+    const { data } = await serviceClient()
+      .from('profiles')
+      .select('role')
+      .eq('id', userId)
+      .single();
     expect(data?.role).toBe('cliente');
     expect(error).not.toBeNull();
   });
 
   it('nuevo usuario obtiene rol cliente por el trigger', async () => {
     const { userId } = await signUpUser(uniq());
-    const { data } = await serviceClient().from('profiles').select('role').eq('id', userId).single();
+    const { data } = await serviceClient()
+      .from('profiles')
+      .select('role')
+      .eq('id', userId)
+      .single();
     expect(data?.role).toBe('cliente');
   });
 });
@@ -702,6 +742,7 @@ export SUPABASE_LOCAL_ANON_KEY="<anon key de supabase start>"
 export SUPABASE_LOCAL_SERVICE_KEY="<service_role key de supabase start>"
 npm test
 ```
+
 Expected: con la migración aplicada (Step 2), los 4 tests PASAN. Si se corre antes de aplicar la migración, fallan — confirma que prueban el comportamiento real.
 
 > Para que el CI corra estos tests, en `ci.yml` se agrega un step `supabase start` (acción `supabase/setup-cli`) antes de `npm test`, exportando las keys locales. Si se prefiere mantener el CI sin Docker, marcar estos tests como suite `integration` separada que corre en un job dedicado con Supabase. Decisión: agregar job `integration` en la Task siguiente del CI.
@@ -718,6 +759,7 @@ git commit -m "feat: identity schema (profiles, roles, RLS) + RLS tests"
 ## Task 10: Clientes Supabase en Next + variables de entorno
 
 **Files:**
+
 - Create: `src/lib/supabase/client.ts`
 - Create: `src/lib/supabase/server.ts`
 - Create: `.env.example`
@@ -744,6 +786,7 @@ SUPABASE_SERVICE_ROLE_KEY=replace-me
 ```bash
 git check-ignore .env.local
 ```
+
 Expected: imprime `.env.local` (está ignorado).
 
 - [ ] **Step 4: Cliente de navegador**
@@ -795,6 +838,7 @@ export async function createClient() {
 ```bash
 npm run typecheck
 ```
+
 Expected: sin errores.
 
 - [ ] **Step 7: Commit**
@@ -809,6 +853,7 @@ git commit -m "feat: Supabase browser/server clients + env example"
 ## Task 11: Login mínimo + ruta protegida por rol (E2E TDD)
 
 **Files:**
+
 - Create: `src/app/login/page.tsx`
 - Create: `src/app/dashboard/page.tsx`
 - Create: `src/middleware.ts`
@@ -876,8 +921,18 @@ export default function LoginPage() {
     <main style={{ padding: 32, maxWidth: 360 }}>
       <h1>Ingresar</h1>
       <form onSubmit={onSubmit}>
-        <input aria-label="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-        <input aria-label="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        <input
+          aria-label="email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input
+          aria-label="password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
         <button type="submit">Entrar</button>
       </form>
       {error && <p role="alert">{error}</p>}
@@ -940,6 +995,7 @@ test('con credenciales válidas se entra al dashboard y se ve el rol', async ({ 
 ```bash
 npm run test:e2e -- tests/e2e/auth.spec.ts
 ```
+
 Expected: el test de redirect PASA tras crear el middleware; el de login FALLA hasta sembrar el usuario (Step 6).
 
 - [ ] **Step 6: Sembrar el usuario de prueba y exportar credenciales**
@@ -962,6 +1018,7 @@ const { error } = await admin.auth.admin.createUser({ email, password, email_con
 if (error && !error.message.includes('already')) throw error;
 console.log('seed ok:', email);
 ```
+
 Correr:
 
 ```bash
@@ -969,6 +1026,7 @@ export E2E_USER_EMAIL=e2e@test.local
 export E2E_USER_PASSWORD=test1234!
 npx tsx tests/e2e/seed.ts
 ```
+
 (Instalar runner si falta: `npm i -D tsx`.)
 
 - [ ] **Step 7: Correr el E2E completo y verificar que pasa**
@@ -976,6 +1034,7 @@ npx tsx tests/e2e/seed.ts
 ```bash
 npm run test:e2e -- tests/e2e/auth.spec.ts
 ```
+
 Expected: ambos tests PASAN.
 
 - [ ] **Step 8: Commit**
@@ -997,6 +1056,7 @@ git commit -m "feat: minimal login + role-gated dashboard + auth E2E"
 supabase projects create showroom-staging --org-id <tu-org-id> --region sa-east-1 --db-password <pass-staging>
 supabase projects create showroom-prod    --org-id <tu-org-id> --region sa-east-1 --db-password <pass-prod>
 ```
+
 (Listar org-id: `supabase orgs list`. Región sugerida LATAM: `sa-east-1` São Paulo.)
 Expected: dos proyectos creados; anotar sus `project-ref`.
 
@@ -1006,6 +1066,7 @@ Expected: dos proyectos creados; anotar sus `project-ref`.
 supabase link --project-ref <ref-staging>
 supabase db push
 ```
+
 Expected: la migración `init_auth` se aplica en staging sin errores.
 
 - [ ] **Step 3: Repetir para prod**
@@ -1014,6 +1075,7 @@ Expected: la migración `init_auth` se aplica en staging sin errores.
 supabase link --project-ref <ref-prod>
 supabase db push
 ```
+
 Expected: misma migración aplicada en prod.
 
 - [ ] **Step 4: Anotar las API URL y anon keys** de staging y prod (panel o `supabase projects api-keys --project-ref <ref>`). Se usan en las env vars de Vercel (Task 13). El `service_role` de cada uno se guarda **solo** como secret de server en Vercel, nunca en el repo.
@@ -1029,6 +1091,7 @@ Expected: misma migración aplicada en prod.
 ```bash
 vercel link
 ```
+
 Expected: crea/asocia el proyecto Vercel a este repo.
 
 - [ ] **Step 2: Conectar el repo de GitHub** (habilita preview por PR + deploy por push a main)
@@ -1036,6 +1099,7 @@ Expected: crea/asocia el proyecto Vercel a este repo.
 ```bash
 vercel git connect
 ```
+
 Expected: Vercel queda conectado al repo `showroom-inmobiliario`; los PR generarán Preview Deployments.
 
 - [ ] **Step 3: Cargar env vars de Preview (apuntan a Supabase staging)**
@@ -1045,6 +1109,7 @@ vercel env add NEXT_PUBLIC_SUPABASE_URL preview
 vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY preview
 vercel env add SUPABASE_SERVICE_ROLE_KEY preview
 ```
+
 (Pegar los valores de **staging** cuando lo pida.)
 
 - [ ] **Step 4: Cargar env vars de Production (apuntan a Supabase prod)**
@@ -1054,6 +1119,7 @@ vercel env add NEXT_PUBLIC_SUPABASE_URL production
 vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY production
 vercel env add SUPABASE_SERVICE_ROLE_KEY production
 ```
+
 (Pegar los valores de **prod**.)
 
 - [ ] **Step 5: Verificar Preview con un PR de prueba**
@@ -1064,6 +1130,7 @@ git commit --allow-empty -m "chore: trigger preview deploy"
 git push -u origin chore/vercel-smoke
 gh pr create --fill
 ```
+
 Expected: el bot de Vercel comenta el PR con una Preview URL; abrirla muestra la home. CI verde.
 
 - [ ] **Step 6: Mergear (despliega staging vía push a main) y verificar el deploy de Vercel**
@@ -1071,6 +1138,7 @@ Expected: el bot de Vercel comenta el PR con una Preview URL; abrirla muestra la
 ```bash
 gh pr merge --squash --delete-branch
 ```
+
 Expected: deploy automático del entorno conectado a `main`; URL del proyecto carga la home.
 
 ---
@@ -1078,6 +1146,7 @@ Expected: deploy automático del entorno conectado a `main`; URL del proyecto ca
 ## Task 14: DISENO.md, README y primer release `v0.1.0`
 
 **Files:**
+
 - Create: `DISENO.md`
 - Modify: `README.md`
 
@@ -1089,14 +1158,17 @@ Expected: deploy automático del entorno conectado a `main`; URL del proyecto ca
 Documento vivo. Resumen e índice del diseño; el detalle vive en `docs/superpowers/`.
 
 ## Estado actual
+
 - Fase 0 (Cimientos): completada → `v0.1.0`.
 - Próxima: Fase 1 (Visor + editor de PNG) — pendiente de brainstorm/spec.
 
 ## Documentos
+
 - Plan maestro (proceso + visión): `docs/superpowers/specs/2026-06-14-plan-maestro-design.md`
 - Plan Fase 0: `docs/superpowers/plans/2026-06-14-fase-0-cimientos.md`
 
 ## Decisiones clave
+
 - Entornos: Local (Docker) + Preview (Vercel, Supabase staging) + Producción (tag, Supabase prod).
 - Branches: trunk-based; `main` siempre desplegable; `feature/*` cortas; prod por tag.
 - Seguridad: RLS default-deny en toda tabla; service_role solo en server; Zod en bordes.
@@ -1111,16 +1183,19 @@ Documento vivo. Resumen e índice del diseño; el detalle vive en `docs/superpow
 Plataforma de showroom para preventa de departamentos.
 
 ## Desarrollo local
+
 1. `docker` corriendo + `supabase start`
 2. Copiar `.env.example` a `.env.local` y completar con las keys de `supabase start`
 3. `npm install`
 4. `npm run dev` → http://localhost:3000
 
 ## Tests
+
 - `npm test` — unit + integración (requiere Supabase local)
 - `npm run test:e2e` — E2E (Playwright)
 
 ## Flujo
+
 Ramas `feature/*` → PR → CI verde → merge squash a `main` → tag `vX.Y.Z` para producción.
 ```
 
@@ -1142,11 +1217,13 @@ git checkout main && git pull
 git tag v0.1.0
 git push --tags
 ```
+
 Expected: Vercel publica el deploy de Production; la home queda en la URL de producción.
 
 - [ ] **Step 5: Verificación final de la fase**
 
 Confirmar que TODO lo siguiente es cierto (evidencia, no suposición):
+
 - [ ] Un PR dispara CI (lint, typecheck, format, test, build, audit, lighthouse) y se ve verde.
 - [ ] `main` está protegido: no se puede pushear directo.
 - [ ] Existe Preview URL por PR apuntando a Supabase staging.
