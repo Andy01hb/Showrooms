@@ -1,3 +1,13 @@
+# Showroom Inmobiliario
+
+Plataforma de showroom para preventa de departamentos (en construcción, Fase 0).
+
+> 📌 **¿Retomás el proyecto (o lo abrís en otra PC)?** Empezá por
+> **[`docs/ESTADO-Y-CONTINUIDAD.md`](docs/ESTADO-Y-CONTINUIDAD.md)** — tiene el estado actual, el setup de
+> entorno y los próximos pasos exactos.
+
+---
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
