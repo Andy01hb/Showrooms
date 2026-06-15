@@ -49,22 +49,22 @@ Plan por fases: **0) Cimientos** (en curso) · 1) Visor+editor PNG · 2) Catálo
 Ejecutando el plan `docs/superpowers/plans/2026-06-14-fase-0-cimientos.md` **inline** (acordado: inline
 para Fase 0 por lo interactivo; subagentes desde Fase 1). Estado por tarea:
 
-| #   | Tarea                               | Estado                                                                                      |
-| --- | ----------------------------------- | ------------------------------------------------------------------------------------------- |
-| 1   | Scaffold Next.js + TS + git         | ✅ hecha                                                                                    |
-| 2   | TS estricto + Prettier + LF         | ✅ hecha                                                                                    |
-| 3   | Vitest + `formatUsd` (TDD)          | ✅ hecha (verde)                                                                            |
-| 4   | Playwright + E2E home (TDD)         | ✅ hecha (verde)                                                                            |
-| 5   | Repo GitHub + push                  | ✅ repo creado y `main` pusheado · ⏳ **falta branch protection** (va tras CI)              |
-| 6   | CI GitHub Actions                   | ✅ `ci.yml` en `main`; **falta confirmar el run verde** en GitHub Actions y proteger `main` |
-| 7   | Lighthouse CI                       | ⏳ pendiente                                                                                |
-| 8   | Supabase local (Docker)             | ⏳ pendiente                                                                                |
-| 9   | Schema profiles/roles/RLS (TDD)     | ⏳ pendiente                                                                                |
-| 10  | Clientes Supabase + env             | ⏳ pendiente                                                                                |
-| 11  | Login + dashboard por rol (E2E TDD) | ⏳ pendiente                                                                                |
-| 12  | Supabase staging + prod             | ⏳ pendiente (necesita `supabase login`)                                                    |
-| 13  | Vercel preview + prod               | ⏳ pendiente (necesita `vercel login`)                                                      |
-| 14  | DISENO.md + README + tag v0.1.0     | ⏳ pendiente                                                                                |
+| #   | Tarea                               | Estado                                                                                     |
+| --- | ----------------------------------- | ------------------------------------------------------------------------------------------ |
+| 1   | Scaffold Next.js + TS + git         | ✅ hecha                                                                                   |
+| 2   | TS estricto + Prettier + LF         | ✅ hecha                                                                                   |
+| 3   | Vitest + `formatUsd` (TDD)          | ✅ hecha (verde)                                                                           |
+| 4   | Playwright + E2E home (TDD)         | ✅ hecha (verde)                                                                           |
+| 5   | Repo GitHub + push                  | ✅ repo creado y `main` pusheado · ⏳ **falta branch protection** (va tras CI)             |
+| 6   | CI GitHub Actions                   | ✅ `ci.yml` en `main` y **run VERDE confirmado** (run #27523450302); falta proteger `main` |
+| 7   | Lighthouse CI                       | ⏳ pendiente                                                                               |
+| 8   | Supabase local (Docker)             | ⏳ pendiente                                                                               |
+| 9   | Schema profiles/roles/RLS (TDD)     | ⏳ pendiente                                                                               |
+| 10  | Clientes Supabase + env             | ⏳ pendiente                                                                               |
+| 11  | Login + dashboard por rol (E2E TDD) | ⏳ pendiente                                                                               |
+| 12  | Supabase staging + prod             | ⏳ pendiente (necesita `supabase login`)                                                   |
+| 13  | Vercel preview + prod               | ⏳ pendiente (necesita `vercel login`)                                                     |
+| 14  | DISENO.md + README + tag v0.1.0     | ⏳ pendiente                                                                               |
 
 **Lo ya construido en el repo:** Next.js 16.2.9 (App Router, TS estricto, Tailwind v4), home mínima
 (`src/app/page.tsx`), helper `src/lib/format.ts` (`formatUsd`) con test, E2E de la home, Vitest +
@@ -114,8 +114,8 @@ Notas de la máquina original (pueden no aplicar en otra PC):
 
 ## 5. Próximos pasos exactos (retomar acá)
 
-1. **Cerrar Task 6 (CI):** confirmar en GitHub → pestaña **Actions** que el workflow **CI** corrió **verde**
-   sobre `main` (lint, typecheck, format:check, test, build, audit). Comando: `gh run list` / `gh run watch`.
+1. **Task 6 (CI):** ✅ ya confirmado **verde** (run #27523450302) sobre `main`. Nada que hacer salvo
+   mantenerlo verde. (Para ver runs: `gh run list` / `gh run watch`.)
 2. **Task 5 (branch protection):** proteger `main` exigiendo el check `ci` y PR obligatorio:
    ```bash
    gh api -X PUT repos/Andy01hb/Showrooms/branches/main/protection \
