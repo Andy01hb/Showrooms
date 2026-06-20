@@ -4,7 +4,7 @@
 > perder el hilo. La "memoria" de Claude Code es local a cada máquina y **no** viaja con el repo, por
 > eso todo el contexto crítico está acá y en `docs/contexto/memoria/` (snapshot) + `docs/superpowers/`.
 
-Última actualización: **2026-06-14**.
+Última actualización: **2026-06-20**.
 
 ---
 
@@ -49,22 +49,22 @@ Plan por fases: **0) Cimientos** (en curso) · 1) Visor+editor PNG · 2) Catálo
 Ejecutando el plan `docs/superpowers/plans/2026-06-14-fase-0-cimientos.md` **inline** (acordado: inline
 para Fase 0 por lo interactivo; subagentes desde Fase 1). Estado por tarea:
 
-| #   | Tarea                               | Estado                                                                                     |
-| --- | ----------------------------------- | ------------------------------------------------------------------------------------------ |
-| 1   | Scaffold Next.js + TS + git         | ✅ hecha                                                                                   |
-| 2   | TS estricto + Prettier + LF         | ✅ hecha                                                                                   |
-| 3   | Vitest + `formatUsd` (TDD)          | ✅ hecha (verde)                                                                           |
-| 4   | Playwright + E2E home (TDD)         | ✅ hecha (verde)                                                                           |
-| 5   | Repo GitHub + push                  | ✅ repo creado y `main` pusheado · ⏳ **falta branch protection** (va tras CI)             |
-| 6   | CI GitHub Actions                   | ✅ `ci.yml` en `main` y **run VERDE confirmado** (run #27523450302); falta proteger `main` |
-| 7   | Lighthouse CI                       | ⏳ pendiente                                                                               |
-| 8   | Supabase local (Docker)             | ⏳ pendiente                                                                               |
-| 9   | Schema profiles/roles/RLS (TDD)     | ⏳ pendiente                                                                               |
-| 10  | Clientes Supabase + env             | ⏳ pendiente                                                                               |
-| 11  | Login + dashboard por rol (E2E TDD) | ⏳ pendiente                                                                               |
-| 12  | Supabase staging + prod             | ⏳ pendiente (necesita `supabase login`)                                                   |
-| 13  | Vercel preview + prod               | ⏳ pendiente (necesita `vercel login`)                                                     |
-| 14  | DISENO.md + README + tag v0.1.0     | ⏳ pendiente                                                                               |
+| #   | Tarea                               | Estado                                                                                                           |
+| --- | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| 1   | Scaffold Next.js + TS + git         | ✅ hecha                                                                                                         |
+| 2   | TS estricto + Prettier + LF         | ✅ hecha                                                                                                         |
+| 3   | Vitest + `formatUsd` (TDD)          | ✅ hecha (verde)                                                                                                 |
+| 4   | Playwright + E2E home (TDD)         | ✅ hecha (verde)                                                                                                 |
+| 5   | Repo GitHub + push                  | ✅ hecha · branch protection en `main` ACTIVA (checks `ci`+`lighthouse`, strict, enforce_admins, PR obligatorio) |
+| 6   | CI GitHub Actions                   | ✅ `ci.yml` en `main`, runs VERDES (incluye PR #1)                                                               |
+| 7   | Lighthouse CI                       | ✅ hecha · `lighthouserc.json` + job `lighthouse` en `ci.yml`; mergeado en PR #1 (verde)                         |
+| 8   | Supabase local (Docker)             | ⏳ pendiente                                                                                                     |
+| 9   | Schema profiles/roles/RLS (TDD)     | ⏳ pendiente                                                                                                     |
+| 10  | Clientes Supabase + env             | ⏳ pendiente                                                                                                     |
+| 11  | Login + dashboard por rol (E2E TDD) | ⏳ pendiente                                                                                                     |
+| 12  | Supabase staging + prod             | ⏳ pendiente (necesita `supabase login`)                                                                         |
+| 13  | Vercel preview + prod               | ⏳ pendiente (necesita `vercel login`)                                                                           |
+| 14  | DISENO.md + README + tag v0.1.0     | ⏳ pendiente                                                                                                     |
 
 **Lo ya construido en el repo:** Next.js 16.2.9 (App Router, TS estricto, Tailwind v4), home mínima
 (`src/app/page.tsx`), helper `src/lib/format.ts` (`formatUsd`) con test, E2E de la home, Vitest +
@@ -114,28 +114,19 @@ Notas de la máquina original (pueden no aplicar en otra PC):
 
 ## 5. Próximos pasos exactos (retomar acá)
 
-1. **Task 6 (CI):** ✅ ya confirmado **verde** (run #27523450302) sobre `main`. Nada que hacer salvo
-   mantenerlo verde. (Para ver runs: `gh run list` / `gh run watch`.)
-2. **Task 5 (branch protection):** proteger `main` exigiendo el check `ci` y PR obligatorio:
-   ```bash
-   gh api -X PUT repos/Andy01hb/Showrooms/branches/main/protection \
-     -H "Accept: application/vnd.github+json" \
-     -f "required_status_checks[strict]=true" \
-     -f "required_status_checks[checks][][context]=ci" \
-     -f "enforce_admins=true" \
-     -f "required_pull_request_reviews[required_approving_review_count]=0" \
-     -f "restrictions=null"
-   ```
-   (Repo es **público**, así branch protection está disponible en free tier.)
-3. **Task 7:** Lighthouse CI (`lighthouserc.json` + job en `ci.yml`).
-4. **Task 8:** `supabase init` + `supabase start` (Docker corriendo). Anotar API URL + anon/service keys.
-5. **Task 9:** migración `init_auth` (tabla `profiles`, enum `user_role` admin/broker/cliente, RLS
+> **Tasks 5, 6 y 7 ✅ COMPLETAS** (2026-06-20). CI verde; branch protection en `main` activa exigiendo
+> los checks `ci` y `lighthouse`, `strict`, `enforce_admins` y PR obligatorio (ya **no** se puede pushear
+> directo a `main`: todo va por rama → PR → checks verdes → merge squash). Lighthouse mergeado en PR #1.
+> **Retomar acá: Task 8.** Las Tasks 8–13 necesitan acciones interactivas tuyas (Docker + logins).
+
+1. **Task 8:** `supabase init` + `supabase start` (Docker corriendo). Anotar API URL + anon/service keys.
+2. **Task 9:** migración `init_auth` (tabla `profiles`, enum `user_role` admin/broker/cliente, RLS
    default-deny, trigger, helper `current_user_role()`) + tests de RLS (Vitest integración).
-6. **Tasks 10–11:** clientes `@/lib/supabase/{client,server}`, `.env.example`/`.env.local`, login +
+3. **Tasks 10–11:** clientes `@/lib/supabase/{client,server}`, `.env.example`/`.env.local`, login +
    `/dashboard` protegido por rol + E2E de auth.
-7. **Task 12:** `supabase login` → crear proyectos `showroom-staging` y `showroom-prod` → `db push`.
-8. **Task 13:** `vercel login` → `vercel link` + `vercel git connect` + env vars preview(staging)/prod.
-9. **Task 14:** `DISENO.md`, `README`, tag `v0.1.0` → deploy producción. Verificación final de fase.
+4. **Task 12:** `supabase login` → crear proyectos `showroom-staging` y `showroom-prod` → `db push`.
+5. **Task 13:** `vercel login` → `vercel link` + `vercel git connect` + env vars preview(staging)/prod.
+6. **Task 14:** `DISENO.md`, `README`, tag `v0.1.0` → deploy producción. Verificación final de fase.
 
 El detalle paso a paso (con comandos y código exacto) está en
 `docs/superpowers/plans/2026-06-14-fase-0-cimientos.md`.
