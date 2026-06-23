@@ -117,7 +117,7 @@ Notas de la máquina original (pueden no aplicar en otra PC):
 > **Tasks 5, 6 y 7 ✅** (2026-06-20) y **Tasks 8 y 9 ✅** (2026-06-22, en la PC Linux). Trabajo en la rama
 > `feature/fase0-supabase-auth` (5 commits, todavía **sin pushear** — falta instalar/loguear `gh` en esta
 > PC). **Retomar acá: Task 12.** Tasks 12–13 necesitan logins interactivos (`supabase login`, `vercel
-> login`); para pushear la rama y abrir PR falta `gh` (instalar + `gh auth login`).
+login`); para pushear la rama y abrir PR falta `gh` (instalar + `gh auth login`).
 
 1. ~~**Task 8:** `supabase init` + `supabase start`.~~ ✅ Stack local arriba. Claves (nuevo formato) en §9.
 2. ~~**Task 9:** migración `init_auth` + tests de RLS.~~ ✅ 6/6 verdes. Ojo: hubo que **agregar GRANTs
@@ -203,19 +203,19 @@ El plan asumía Windows + Docker Desktop. En esta PC (Ubuntu 26.04) el setup fue
 Esta versión del CLI ya **no** imprime `anon key` / `service_role key` (JWT legacy), sino el formato nuevo.
 Equivalencias usadas en el código/tests:
 
-| Plan (legacy)    | Esta versión   | Cómo obtenerla              |
-| ---------------- | -------------- | --------------------------- |
-| API URL          | Project URL    | `http://127.0.0.1:54321`    |
-| anon key         | **Publishable** (`sb_publishable_…`) | `supabase status` |
+| Plan (legacy)    | Esta versión                         | Cómo obtenerla                   |
+| ---------------- | ------------------------------------ | -------------------------------- |
+| API URL          | Project URL                          | `http://127.0.0.1:54321`         |
+| anon key         | **Publishable** (`sb_publishable_…`) | `supabase status`                |
 | service_role key | **Secret** (`sb_secret_…`)           | `supabase status` (NO commitear) |
 
-Son *shared defaults* de dev local (no producción), pero igual obtené los valores con `supabase status`
+Son _shared defaults_ de dev local (no producción), pero igual obtené los valores con `supabase status`
 en vez de hardcodearlos. Los tests de RLS los toman de las env vars `SUPABASE_LOCAL_URL` /
 `SUPABASE_LOCAL_ANON_KEY` / `SUPABASE_LOCAL_SERVICE_KEY` (ver `tests/helpers/supabase.ts`).
 
 ### Desvío en la migración `init_auth`
 
-Supabase moderno es *secure by default*: no auto-otorga privilegios de tabla a `authenticated`/`anon`/
+Supabase moderno es _secure by default_: no auto-otorga privilegios de tabla a `authenticated`/`anon`/
 `service_role` en tablas nuevas. Por eso la migración agrega GRANTs explícitos
 (`grant select, update … to authenticated;` y `grant all … to service_role;`). Sin esto, RLS daba
 `permission denied for table profiles` (error 42501) aunque las políticas fueran correctas.
