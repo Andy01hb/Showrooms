@@ -60,8 +60,8 @@ para Fase 0 por lo interactivo; subagentes desde Fase 1). Estado por tarea:
 | 7   | Lighthouse CI                       | ✅ hecha · `lighthouserc.json` + job `lighthouse` en `ci.yml`; mergeado en PR #1 (verde)                         |
 | 8   | Supabase local (Docker)             | ✅ hecha (2026-06-22) · stack local arriba en `:54321` (Studio `:54323`)                                         |
 | 9   | Schema profiles/roles/RLS (TDD)     | ✅ hecha (2026-06-22) · migración `init_auth` aplicada · 6/6 tests verdes                                        |
-| 10  | Clientes Supabase + env             | ⏳ pendiente (no requiere login interactivo)                                                                     |
-| 11  | Login + dashboard por rol (E2E TDD) | ⏳ pendiente                                                                                                     |
+| 10  | Clientes Supabase + env             | ✅ hecha (2026-06-22) · `client.ts`/`server.ts` + `.env.example`/`.env.local`                                    |
+| 11  | Login + dashboard por rol (E2E TDD) | ✅ hecha (2026-06-22) · `src/proxy.ts` (Next 16) + login/dashboard · 3 E2E verdes                                |
 | 12  | Supabase staging + prod             | ⏳ pendiente (necesita `supabase login`)                                                                         |
 | 13  | Vercel preview + prod               | ⏳ pendiente (necesita `vercel login`)                                                                           |
 | 14  | DISENO.md + README + tag v0.1.0     | ⏳ pendiente                                                                                                     |
@@ -115,18 +115,24 @@ Notas de la máquina original (pueden no aplicar en otra PC):
 ## 5. Próximos pasos exactos (retomar acá)
 
 > **Tasks 5, 6 y 7 ✅** (2026-06-20) y **Tasks 8 y 9 ✅** (2026-06-22, en la PC Linux). Trabajo en la rama
-> `feature/fase0-supabase-auth` (todavía **sin pushear** — falta instalar/loguear `gh` en esta PC).
-> **Retomar acá: Task 10.** Tasks 10–11 NO necesitan login interactivo; Tasks 12–13 sí (`supabase login`,
-> `vercel login`).
+> `feature/fase0-supabase-auth` (5 commits, todavía **sin pushear** — falta instalar/loguear `gh` en esta
+> PC). **Retomar acá: Task 12.** Tasks 12–13 necesitan logins interactivos (`supabase login`, `vercel
+> login`); para pushear la rama y abrir PR falta `gh` (instalar + `gh auth login`).
 
 1. ~~**Task 8:** `supabase init` + `supabase start`.~~ ✅ Stack local arriba. Claves (nuevo formato) en §9.
 2. ~~**Task 9:** migración `init_auth` + tests de RLS.~~ ✅ 6/6 verdes. Ojo: hubo que **agregar GRANTs
    explícitos** a `authenticated`/`service_role` (Supabase moderno ya no los otorga solo en tablas nuevas).
-3. **Tasks 10–11 (retomar acá):** clientes `@/lib/supabase/{client,server}`, `.env.example`/`.env.local`, login +
-   `/dashboard` protegido por rol + E2E de auth.
-4. **Task 12:** `supabase login` → crear proyectos `showroom-staging` y `showroom-prod` → `db push`.
+3. ~~**Tasks 10–11:** clientes Supabase + login + `/dashboard` por rol + E2E.~~ ✅ 3 E2E verdes. Ojo:
+   **Next 16 renombró `middleware.ts` → `proxy.ts`** (función `proxy`); y Playwright requirió **1.61**
+   (la 1.60 no soporta Ubuntu 26.04). User E2E sembrado idempotente con `tests/e2e/seed.ts`.
+4. **Task 12 (retomar acá):** `supabase login` → crear proyectos `showroom-staging` y `showroom-prod` → `db push`.
 5. **Task 13:** `vercel login` → `vercel link` + `vercel git connect` + env vars preview(staging)/prod.
 6. **Task 14:** `DISENO.md`, `README`, tag `v0.1.0` → deploy producción. Verificación final de fase.
+
+> **Pendiente de infra para pushear:** instalar `gh` (`sudo apt-get install -y gh` o
+> `https://cli.github.com`), `gh auth login`, luego `git push -u origin feature/fase0-supabase-auth` y
+> abrir PR. El CI (`ci.yml`) hoy NO levanta Supabase, así que los tests de integración/E2E que dependen de
+> la DB fallarían en CI — falta agregar un job con `supabase start` (ver nota en el plan, Task 9 Step 5).
 
 El detalle paso a paso (con comandos y código exacto) está en
 `docs/superpowers/plans/2026-06-14-fase-0-cimientos.md`.
