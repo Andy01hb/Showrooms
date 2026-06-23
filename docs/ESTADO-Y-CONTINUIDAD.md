@@ -4,7 +4,7 @@
 > perder el hilo. La "memoria" de Claude Code es local a cada máquina y **no** viaja con el repo, por
 > eso todo el contexto crítico está acá y en `docs/contexto/memoria/` (snapshot) + `docs/superpowers/`.
 
-Última actualización: **2026-06-20**.
+Última actualización: **2026-06-22** (retomado en PC nueva con **Linux/Ubuntu 26.04**).
 
 ---
 
@@ -58,10 +58,10 @@ para Fase 0 por lo interactivo; subagentes desde Fase 1). Estado por tarea:
 | 5   | Repo GitHub + push                  | ✅ hecha · branch protection en `main` ACTIVA (checks `ci`+`lighthouse`, strict, enforce_admins, PR obligatorio) |
 | 6   | CI GitHub Actions                   | ✅ `ci.yml` en `main`, runs VERDES (incluye PR #1)                                                               |
 | 7   | Lighthouse CI                       | ✅ hecha · `lighthouserc.json` + job `lighthouse` en `ci.yml`; mergeado en PR #1 (verde)                         |
-| 8   | Supabase local (Docker)             | ⏳ pendiente                                                                                                     |
-| 9   | Schema profiles/roles/RLS (TDD)     | ⏳ pendiente                                                                                                     |
-| 10  | Clientes Supabase + env             | ⏳ pendiente                                                                                                     |
-| 11  | Login + dashboard por rol (E2E TDD) | ⏳ pendiente                                                                                                     |
+| 8   | Supabase local (Docker)             | ✅ hecha (2026-06-22) · stack local arriba en `:54321` (Studio `:54323`)                                         |
+| 9   | Schema profiles/roles/RLS (TDD)     | ✅ hecha (2026-06-22) · migración `init_auth` aplicada · 6/6 tests verdes                                        |
+| 10  | Clientes Supabase + env             | ✅ hecha (2026-06-22) · `client.ts`/`server.ts` + `.env.example`/`.env.local`                                    |
+| 11  | Login + dashboard por rol (E2E TDD) | ✅ hecha (2026-06-22) · `src/proxy.ts` (Next 16) + login/dashboard · 3 E2E verdes                                |
 | 12  | Supabase staging + prod             | ⏳ pendiente (necesita `supabase login`)                                                                         |
 | 13  | Vercel preview + prod               | ⏳ pendiente (necesita `vercel login`)                                                                           |
 | 14  | DISENO.md + README + tag v0.1.0     | ⏳ pendiente                                                                                                     |
@@ -114,19 +114,25 @@ Notas de la máquina original (pueden no aplicar en otra PC):
 
 ## 5. Próximos pasos exactos (retomar acá)
 
-> **Tasks 5, 6 y 7 ✅ COMPLETAS** (2026-06-20). CI verde; branch protection en `main` activa exigiendo
-> los checks `ci` y `lighthouse`, `strict`, `enforce_admins` y PR obligatorio (ya **no** se puede pushear
-> directo a `main`: todo va por rama → PR → checks verdes → merge squash). Lighthouse mergeado en PR #1.
-> **Retomar acá: Task 8.** Las Tasks 8–13 necesitan acciones interactivas tuyas (Docker + logins).
+> **Tasks 5, 6 y 7 ✅** (2026-06-20) y **Tasks 8 y 9 ✅** (2026-06-22, en la PC Linux). Trabajo en la rama
+> `feature/fase0-supabase-auth` (5 commits, todavía **sin pushear** — falta instalar/loguear `gh` en esta
+> PC). **Retomar acá: Task 12.** Tasks 12–13 necesitan logins interactivos (`supabase login`, `vercel
+login`); para pushear la rama y abrir PR falta `gh` (instalar + `gh auth login`).
 
-1. **Task 8:** `supabase init` + `supabase start` (Docker corriendo). Anotar API URL + anon/service keys.
-2. **Task 9:** migración `init_auth` (tabla `profiles`, enum `user_role` admin/broker/cliente, RLS
-   default-deny, trigger, helper `current_user_role()`) + tests de RLS (Vitest integración).
-3. **Tasks 10–11:** clientes `@/lib/supabase/{client,server}`, `.env.example`/`.env.local`, login +
-   `/dashboard` protegido por rol + E2E de auth.
-4. **Task 12:** `supabase login` → crear proyectos `showroom-staging` y `showroom-prod` → `db push`.
+1. ~~**Task 8:** `supabase init` + `supabase start`.~~ ✅ Stack local arriba. Claves (nuevo formato) en §9.
+2. ~~**Task 9:** migración `init_auth` + tests de RLS.~~ ✅ 6/6 verdes. Ojo: hubo que **agregar GRANTs
+   explícitos** a `authenticated`/`service_role` (Supabase moderno ya no los otorga solo en tablas nuevas).
+3. ~~**Tasks 10–11:** clientes Supabase + login + `/dashboard` por rol + E2E.~~ ✅ 3 E2E verdes. Ojo:
+   **Next 16 renombró `middleware.ts` → `proxy.ts`** (función `proxy`); y Playwright requirió **1.61**
+   (la 1.60 no soporta Ubuntu 26.04). User E2E sembrado idempotente con `tests/e2e/seed.ts`.
+4. **Task 12 (retomar acá):** `supabase login` → crear proyectos `showroom-staging` y `showroom-prod` → `db push`.
 5. **Task 13:** `vercel login` → `vercel link` + `vercel git connect` + env vars preview(staging)/prod.
 6. **Task 14:** `DISENO.md`, `README`, tag `v0.1.0` → deploy producción. Verificación final de fase.
+
+> **Pendiente de infra para pushear:** instalar `gh` (`sudo apt-get install -y gh` o
+> `https://cli.github.com`), `gh auth login`, luego `git push -u origin feature/fase0-supabase-auth` y
+> abrir PR. El CI (`ci.yml`) hoy NO levanta Supabase, así que los tests de integración/E2E que dependen de
+> la DB fallarían en CI — falta agregar un job con `supabase start` (ver nota en el plan, Task 9 Step 5).
 
 El detalle paso a paso (con comandos y código exacto) está en
 `docs/superpowers/plans/2026-06-14-fase-0-cimientos.md`.
@@ -172,3 +178,44 @@ contexto — alcanza para retomar.)
   seguridad, escalabilidad, testing, encaje con las 6 fases).
 - `docs/superpowers/plans/2026-06-14-fase-0-cimientos.md` — plan Fase 0, 14 tareas con comandos y TDD.
 - `docs/contexto/memoria/*.md` — snapshot de la memoria de Claude (proyecto, stack, dominio, preferencias).
+
+---
+
+## 9. Notas de la PC Linux (Ubuntu 26.04) — setup que difiere del plan original (Windows)
+
+El plan asumía Windows + Docker Desktop. En esta PC (Ubuntu 26.04) el setup fue:
+
+- **Docker:** `sudo apt-get install -y docker.io` (Docker **Engine** nativo 29.1.3, NO Docker Desktop —
+  mucho más liviano, sin VM; esto resolvió el problema de memoria que nos frenó antes). Daemon habilitado
+  con `sudo systemctl enable --now docker`. Usuario en grupo `docker` (`sudo usermod -aG docker $USER`).
+  - ⚠️ Tras `usermod`, el grupo no se activa en sesiones ya abiertas. Como `newgrp`/`sg` no están
+    instalados, para usar docker **sin reloguear** se corre vía `sudo -u $USER <cmd>` (recalcula los
+    grupos desde `/etc/group`). Lo ideal a futuro: cerrar sesión y volver a entrar una vez.
+- **Supabase CLI 2.107.0:** `npm i -g supabase` sigue deshabilitado. Se instaló el **tarball** de
+  `github.com/supabase/cli/releases` en `~/.local/bin` (ya en PATH). Importante: el release trae **dos**
+  binarios (`supabase` = shim + `supabase-go` = CLI real); hay que extraer **ambos** juntos o `supabase`
+  falla con "Could not find the supabase-go binary".
+- **`gh` / `vercel login` / `supabase login`:** aún NO hechos en esta PC (gh ni siquiera instalado).
+  Bloquean push/PR y Tasks 12–13.
+
+### Claves de Supabase local (formato NUEVO)
+
+Esta versión del CLI ya **no** imprime `anon key` / `service_role key` (JWT legacy), sino el formato nuevo.
+Equivalencias usadas en el código/tests:
+
+| Plan (legacy)    | Esta versión                         | Cómo obtenerla                   |
+| ---------------- | ------------------------------------ | -------------------------------- |
+| API URL          | Project URL                          | `http://127.0.0.1:54321`         |
+| anon key         | **Publishable** (`sb_publishable_…`) | `supabase status`                |
+| service_role key | **Secret** (`sb_secret_…`)           | `supabase status` (NO commitear) |
+
+Son _shared defaults_ de dev local (no producción), pero igual obtené los valores con `supabase status`
+en vez de hardcodearlos. Los tests de RLS los toman de las env vars `SUPABASE_LOCAL_URL` /
+`SUPABASE_LOCAL_ANON_KEY` / `SUPABASE_LOCAL_SERVICE_KEY` (ver `tests/helpers/supabase.ts`).
+
+### Desvío en la migración `init_auth`
+
+Supabase moderno es _secure by default_: no auto-otorga privilegios de tabla a `authenticated`/`anon`/
+`service_role` en tablas nuevas. Por eso la migración agrega GRANTs explícitos
+(`grant select, update … to authenticated;` y `grant all … to service_role;`). Sin esto, RLS daba
+`permission denied for table profiles` (error 42501) aunque las políticas fueran correctas.

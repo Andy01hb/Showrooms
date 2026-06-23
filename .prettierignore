@@ -5,3 +5,7 @@ build
 coverage
 package-lock.json
 *.log
+
+# Supabase (generados / temporales)
+supabase/.temp
+supabase/.branches
